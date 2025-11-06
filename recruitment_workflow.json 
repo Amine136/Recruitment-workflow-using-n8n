@@ -1,0 +1,554 @@
+{
+    "name": "Recruitment workflow",
+    "nodes": [
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+            "typeVersion": 1.3,
+            "position": [
+                752,
+                64
+            ],
+            "id": "c285c038-5add-48df-b096-fa2537a7889a",
+            "name": "When chat message received",
+            "webhookId": "id"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                1056,
+                272
+            ],
+            "id": "974f9273-c8f8-4cd0-8231-218ce77d9583",
+            "name": "Google Gemini Chat Model"
+        },
+        {
+            "parameters": {
+                "person": "..",
+                "text": "={{ $json.text }}",
+                "additionalFields": {}
+            },
+            "type": "n8n-nodes-base.linkedIn",
+            "typeVersion": 1,
+            "position": [
+                1360,
+                64
+            ],
+            "id": "fd24c261-ff8a-467f-b8b6-515ca1948182",
+            "name": "Create a post"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "=Role:\nYou are a professional recruiter at Future AI. Your task is to generate a LinkedIn job post that is ready to publish automatically without any manual editing. Always include the company name Future AI in the text.\n\nUser Prompt Template:\nYou will be given a short textual description of a role (e.g., “We need someone with experience in Python, cloud computing, and DevOps.”). Based on this, generate a LinkedIn job post following the exact structure below.\n\nFormatting rules:\n\nUse emojis at key points (🚀, ✅, 🔹, ✨) to make the post engaging.\n\nNever use Markdown stars (*) or bold markers (**).\n\nWrite in clean LinkedIn style: plain text with emoji bullets.\n\nKeep it concise, professional, and under 200 words.\n\nAlways output hashtags in LinkedIn format (e.g., #Hiring #FutureAI).\n\nOutput format:\n\nIntro (1–2 sentences): Attention-grabbing about Future AI and why the role is exciting.\n\nJob title + purpose.\n\nKey Requirements (3–6 items, with ✅ emojis).\n\nResponsibilities (2–4 items, with 🔹 emojis).\n\nCall-to-action (encouraging candidates to apply).\n\nFinal hashtags (6–8, mix of #Hiring, #FutureAI, #TechJobs, #AI, etc.).\n\nthe user input: \n\n {{ $json.chatInput }}",
+                "batching": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.chainLlm",
+            "typeVersion": 1.7,
+            "position": [
+                992,
+                64
+            ],
+            "id": "156fe57e-e6ca-4172-830b-5730892d7080",
+            "name": "Basic LLM Chain"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1.1,
+            "position": [
+                1616,
+                80
+            ],
+            "id": "a51ea9a4-4d5d-4aae-8aba-3cb77ed53036",
+            "name": "Wait",
+            "webhookId": "id"
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "https://docs.google.com/spreadsheets/d/...",
+                    "mode": "url"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": 2078629259,
+                    "mode": "list",
+                    "cachedResultName": "Réponses au formulaire 1",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/..."
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.7,
+            "position": [
+                1872,
+                80
+            ],
+            "id": "18142f25-3390-42ec-9f13-30bd608ea453",
+            "name": "Get row(s) in sheet",
+            "executeOnce": true
+        },
+        {
+            "parameters": {
+                "content": "# Ranking step\n",
+                "height": 560,
+                "width": 1168
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                1776,
+                -48
+            ],
+            "typeVersion": 1,
+            "id": "25166ea7-afbb-4463-9e4f-0f4a11be7542",
+            "name": "Sticky Note"
+        },
+        {
+            "parameters": {
+                "operation": "download",
+                "fileId": {
+                    "__rl": true,
+                    "value": "={{ $json[\"Please upload your resume\"].replace(\"open?id=\", \"file/d/\") }}\n\n\n",
+                    "mode": "url"
+                },
+                "options": {
+                    "fileName": "={{ $json[\"Full name\"] }}"
+                }
+            },
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 3,
+            "position": [
+                2080,
+                80
+            ],
+            "id": "1da236a1-839c-41df-bdf8-902e8d66158d",
+            "name": "Download file",
+            "executeOnce": false
+        },
+        {
+            "parameters": {
+                "operation": "pdf",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.extractFromFile",
+            "typeVersion": 1,
+            "position": [
+                2240,
+                80
+            ],
+            "id": "d9354341-bda6-4994-a45c-fc2c054ed7d5",
+            "name": "Extract from File"
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "=You are an HR assistant evaluating resumes.\n\n## Job Description:\nAI Engineer Job Description\n\nJob Title: AI Engineer\n\nCompany: Tech Innovators Inc.\n\nLocation: Remote / Tunis\n\nJob Overview:\nWe are looking for a talented AI Engineer to design, develop, and deploy machine learning models and AI solutions for our products. The ideal candidate has strong programming skills, experience with ML frameworks, and the ability to integrate AI into production systems.\n\nResponsibilities:\n\nDesign and implement machine learning and deep learning models.\n\nCollaborate with software engineers to integrate AI models into applications.\n\nOptimize model performance and scalability.\n\nBuild and maintain AI pipelines and workflows.\n\nStay up-to-date with latest AI research and technologies.\n\nRequirements (Must-Have):\n\nStrong programming skills in Python.\n\nExperience with ML frameworks such as TensorFlow or PyTorch.\n\nKnowledge of data preprocessing, feature engineering, and model evaluation.\n\nExperience with cloud platforms (AWS, Azure, or GCP).\n\nFluent in English (spoken and written).\n\nPreferred / Nice-to-Have:\n\nExperience with computer vision, NLP, or reinforcement learning.\n\nFamiliarity with DevOps and CI/CD for ML models.\n\nExperience with containerization (Docker, Kubernetes).\n\nAdvanced degrees or certifications in AI/ML or related fields.\n\nEducation:\n\nB.Sc. or M.Sc. in Computer Science, Artificial Intelligence, or related field.\n\n## Candidate Resume:\n{{ $json.text }}\n\n## Evaluation Rules:\n- Strict requirements are non-negotiable. \n  - If the candidate does NOT meet one strict requirement, return:\n    {\n      \"score\": 0,\n      \"reason\": \"Missing strict requirement: <requirement>\"\n    }\n  - Do not process other metrics in this case.\n\n- Otherwise, score the resume out of 100 points as follows:\n  - 60 points: Match with job requirements (skills, tools, years of experience).\n  - 30 points: Strength of professional experience and technical depth.\n  - 10 points: Education, certifications, and languages.\n\n## Output Format:\nRespond ONLY in JSON with this structure:\n{\n  \"score\": <number between 0 and 100>,\n  \"breakdown\": {\n    \"requirements\": <0-60>,\n    \"experience\": <0-30>,\n    \"education_languages_certifications\": <0-10>\n  },\n  \"strengths\": [list of strengths],\n  \"gaps\": [list of missing or weak areas]\n}\n",
+                "batching": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.chainLlm",
+            "typeVersion": 1.7,
+            "position": [
+                2448,
+                80
+            ],
+            "id": "6adfb374-6af9-4d47-8ab5-3a7675dd3355",
+            "name": "Basic LLM Chain1"
+        },
+        {
+            "parameters": {
+                "options": {}
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                2400,
+                304
+            ],
+            "id": "c3b380e1-7b72-41b9-bfb0-cb6fcc47090c",
+            "name": "Google Gemini Chat Model1"
+        },
+        {
+            "parameters": {
+                "documentId": {
+                    "__rl": true,
+                    "value": "https://docs.google.com/spreadsheets/d/...",
+                    "mode": "url"
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": 2078629259,
+                    "mode": "list",
+                    "cachedResultName": "Réponses au formulaire 1",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/..."
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.7,
+            "position": [
+                3072,
+                80
+            ],
+            "id": "968161c7-7815-4a5d-9801-9b2c45c3b7e3",
+            "name": "Get row(s) in sheet1",
+            "executeOnce": true
+        },
+        {
+            "parameters": {
+                "jsCode": "// Get all items (rows from the sheet)\nlet rows = $input.all().map(item => item.json);\n\n// Sort by rank (descending)\nrows.sort((a, b) => Number(b.Rank) - Number(a.Rank));\n\n// Take only the top 5\nrows = rows.slice(0, 5);\n\n// Build new items with the same structure\nconst output = [];\nfor (const row of rows) {\n  output.push({ json: row });\n}\n\nreturn output;\n"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                3296,
+                80
+            ],
+            "id": "91e9d04b-5bce-4ce5-aacd-4c275f73f895",
+            "name": "Code in JavaScript"
+        },
+        {
+            "parameters": {
+                "calendar": {
+                    "__rl": true,
+                    "value": "example@mail.com",
+                    "mode": "id"
+                },
+                "start": "={{ $now.plus(1, 'hour') }}",
+                "end": "={{ $now.plus(2, 'hour') }}",
+                "additionalFields": {
+                    "attendees": [
+                        "={{ $json.Email }}"
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.googleCalendar",
+            "typeVersion": 1.3,
+            "position": [
+                3552,
+                80
+            ],
+            "id": "849d3759-248c-4596-8c3a-54de70f88954",
+            "name": "Create an event"
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "documentId": {
+                    "__rl": true,
+                    "value": "10nmgJKX8SaATrn1_UL7U7vjguLID4MWaiaUSD6pPhzo",
+                    "mode": "list",
+                    "cachedResultName": "Invitation - Formulaire de réponse (réponses)",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/..."
+                },
+                "sheetName": {
+                    "__rl": true,
+                    "value": 2078629259,
+                    "mode": "list",
+                    "cachedResultName": "Réponses au formulaire 1",
+                    "cachedResultUrl": "https://docs.google.com/spreadsheets/d/..."
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "Rank": "={{ JSON.parse($json[\"text\"].replace(/^```(json)?/, \"\").replace(/```$/, \"\").trim()).score }}\n",
+                        "Email": "={{ $('Get row(s) in sheet').item.json.Email }}"
+                    },
+                    "matchingColumns": [
+                        "Email"
+                    ],
+                    "schema": [
+                        {
+                            "id": "Horodateur",
+                            "displayName": "Horodateur",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "Full name",
+                            "displayName": "Full name",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "Email",
+                            "displayName": "Email",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "Please upload your resume",
+                            "displayName": "Please upload your resume",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": true
+                        },
+                        {
+                            "id": "Rank",
+                            "displayName": "Rank",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "string",
+                            "canBeUsedToMatch": true,
+                            "removed": false
+                        },
+                        {
+                            "id": "row_number",
+                            "displayName": "row_number",
+                            "required": false,
+                            "defaultMatch": false,
+                            "display": true,
+                            "type": "number",
+                            "canBeUsedToMatch": true,
+                            "readOnly": true,
+                            "removed": true
+                        }
+                    ],
+                    "attemptToConvertTypes": false,
+                    "convertFieldsToString": false
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.googleSheets",
+            "typeVersion": 4.7,
+            "position": [
+                2720,
+                80
+            ],
+            "id": "a26a1692-1284-4b03-8f55-f4012b2cd000",
+            "name": "Update row in sheet"
+        },
+        {
+            "parameters": {
+                "content": "# fixed interview",
+                "height": 560,
+                "width": 784
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                2976,
+                -48
+            ],
+            "typeVersion": 1,
+            "id": "c3e9ff68-c6bb-4c1b-8713-b76a84a39886",
+            "name": "Sticky Note1"
+        },
+        {
+            "parameters": {
+                "content": "# Generate and post the job description",
+                "height": 544,
+                "width": 672
+            },
+            "type": "n8n-nodes-base.stickyNote",
+            "position": [
+                896,
+                -48
+            ],
+            "typeVersion": 1,
+            "id": "23dc61e6-f2fa-4ae0-bb83-602df0eea66d",
+            "name": "Sticky Note2"
+        }
+    ],
+    "pinData": {
+        "Create a post": [
+            {
+                "json": {
+                    "urn": "urn:li:share:7374208286943969280"
+                }
+            }
+        ],
+        "Basic LLM Chain": [
+            {
+                "json": {
+                    "text": "🚀 Future AI is at the forefront of innovation, shaping the future with groundbreaking technology. We're looking for a talented individual to join our dynamic team!\n\nSoftware Engineer, Future AI: Drive our core product development, building scalable and robust solutions.\n\nKey Requirements:\n✅ Strong proficiency in Python development.\n✅ Experience with cloud computing platforms (AWS, Azure, GCP).\n✅ Solid understanding and application of DevOps principles and tools.\n✅ Ability to design, develop, and deploy high-quality software.\n\nResponsibilities:\n🔹 Develop and maintain robust, scalable software applications.\n🔹 Implement and manage CI/CD pipelines for seamless deployments.\n🔹 Collaborate with cross-functional teams to define, design, and ship new features.\n\n✨ Ready to make an impact? Apply now and grow with Future AI!\n\n#Hiring #SoftwareEngineer #Python #CloudComputing #DevOps #TechJobs #FutureAI #CareerOpportunity"
+                }
+            }
+        ],
+        "Wait": [
+            {
+                "json": {
+                    "urn": "urn:li:share:7374208286943969280"
+                }
+            }
+        ]
+    },
+    "connections": {
+        "When chat message received": {
+            "main": [
+                [
+                    {
+                        "node": "Basic LLM Chain",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Basic LLM Chain",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Basic LLM Chain": {
+            "main": [
+                [
+                    {
+                        "node": "Create a post",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Create a post": {
+            "main": [
+                [
+                    {
+                        "node": "Wait",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait": {
+            "main": [
+                [
+                    {
+                        "node": "Get row(s) in sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get row(s) in sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Download file",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Download file": {
+            "main": [
+                [
+                    {
+                        "node": "Extract from File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Extract from File": {
+            "main": [
+                [
+                    {
+                        "node": "Basic LLM Chain1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat Model1": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "Basic LLM Chain1",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Basic LLM Chain1": {
+            "main": [
+                [
+                    {
+                        "node": "Update row in sheet",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get row(s) in sheet1": {
+            "main": [
+                [
+                    {
+                        "node": "Code in JavaScript",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Code in JavaScript": {
+            "main": [
+                [
+                    {
+                        "node": "Create an event",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update row in sheet": {
+            "main": [
+                [
+                    {
+                        "node": "Get row(s) in sheet1",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {
+        "executionOrder": "v1"
+    },
+    "versionId": "c9b805cc-2b63-4b3c-b10c-feceb9064224",
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "REDACTED"
+    },
+    "id": "DL15R8g9PtLOUDR2",
+    "tags": []
+}
