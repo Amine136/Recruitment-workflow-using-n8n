@@ -66,5 +66,5 @@ This project is licensed under the **MIT License** – feel free to use and modi
 
 ## 👨‍💻 Author
 
-Created by **[Ouni Mohamed Amine](https://www.ouni.site)**  
-AI Engineer | Automation Enthusiast | Data Scientist
+Created by **[Ouni Mohamed Amine]**  
+AI Engineer 
