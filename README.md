@@ -66,5 +66,5 @@ This project is licensed under the **MIT License** – feel free to use and modi
 
 ## 👨‍💻 Author
 
-Created by **[Ouni Mohamed Amine]**  
+Created by **Ouni Mohamed Amine**  
 AI Engineer 
