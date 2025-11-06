@@ -1,70 +1,127 @@
-# Recruitment Workflow using n8n
+# 🤖 Recruitment Workflow using n8n
 
-This repository contains an **automated recruitment workflow** built with [n8n](https://n8n.io/).  
-The workflow helps streamline the hiring process — from receiving applications to storing and managing candidate data automatically.
-
----
-
-## 🚀 Overview
-
-The **Recruitment Workflow using n8n** automates several repetitive tasks in a typical hiring pipeline.  
-It is designed to:
-
-- Receive new candidate submissions (via email, form, or webhook)
-- Extract and clean candidate data (name, email, CV link, skills, etc.)
-- Store the structured data in a database or spreadsheet
-- Send automated notifications or follow-ups
-- Provide HR with a clean, centralized candidate dashboard
+> Automates several repetitive tasks in a typical hiring pipeline using **n8n**, **Gemini API**, **Google Apps**, and **LinkedIn** — from collecting candidate data to generating job posts, ranking resumes, and scheduling interviews automatically.
 
 ---
 
-## 🧩 Files
+## 📋 Overview
 
-| File | Description |
-|------|--------------|
-| `recruitment_workflow.json` | Cleaned n8n workflow JSON file (ready to import) |
-| `workflow_screenshot.png` | Visual representation of the workflow in n8n |
-| `README.md` | Documentation and setup instructions |
-| `.gitignore` | Optional file to keep repo clean |
+The **Recruitment Workflow** is a low-code automation built with **[n8n](https://n8n.io)** to simplify and accelerate the hiring process.  
+It integrates AI (Google Gemini), Google Workspace tools, and LinkedIn to handle key steps — from job post generation to candidate evaluation and interview scheduling.
 
 ---
 
-## 🖼️ Workflow Preview
+## ⚙️ Workflow Description
 
-![Workflow Preview](workflow_screenshot.png)
+### 🔹 Step 1 — Generate & Post Job Descriptions
+- Trigger: Chat input through n8n.
+- Uses **Google Gemini API** via a LangChain node to transform short role descriptions into full LinkedIn-style job posts.
+- Posts automatically to **LinkedIn** using the LinkedIn node.
+
+### 🔹 Step 2 — Collect Candidate Applications
+- Reads applications submitted through a **Google Form** (stored in a Google Sheet).
+- Downloads uploaded **resumes** from Google Drive.
+
+### 🔹 Step 3 — Evaluate Resumes with AI
+- Extracts text content from resumes.
+- Sends candidate resumes to **Gemini LLM** for structured scoring based on:
+  - Technical requirements (60 pts)
+  - Professional experience (30 pts)
+  - Education & certifications (10 pts)
+- Updates candidate **scores and ranks** in Google Sheets.
+
+### 🔹 Step 4 — Rank & Select Top Candidates
+- A **JavaScript node** sorts candidates by their rank.
+- Selects the **top 5** candidates for interviews.
+
+### 🔹 Step 5 — Schedule Interviews Automatically
+- Creates interview events in **Google Calendar**.
+- Invites the selected candidates by email.
 
 ---
 
-## ⚙️ How to Use
+## 🧠 AI Prompts Used
 
-1. Open your **n8n** instance (local or cloud).
-2. Go to **Workflows → Import from File**.
-3. Upload the file `recruitment_workflow.json`.
-4. Configure your credentials (email, database, or webhook as needed).
-5. Activate the workflow and watch the automation run! 🎉
+**1️⃣ Job Post Generator (Gemini):**  
+Generates a complete LinkedIn job post following style rules (emojis, clean structure, hashtags, etc.).
+
+**2️⃣ Resume Evaluator (Gemini):**  
+Evaluates resumes based on predefined scoring logic and outputs structured JSON with:
+```json
+{
+  "score": 87,
+  "breakdown": {
+    "requirements": 55,
+    "experience": 25,
+    "education_languages_certifications": 7
+  },
+  "strengths": ["Strong Python skills", "Experience with TensorFlow"],
+  "gaps": ["Limited cloud experience"]
+}
+```
 
 ---
 
-## 🧠 Description of the Workflow
+## 🧩 Technologies Used
 
-This workflow automates key recruitment operations:
-- Triggers on new job applications.
-- Parses and validates candidate information.
-- Filters or ranks candidates based on predefined criteria.
-- Sends notifications or forwards data to HR systems.
-- Optionally stores structured records in a database for analytics or tracking.
+| Tool / Service             | Purpose                                 |
+| -------------------------- | --------------------------------------- |
+| **n8n**                    | Workflow orchestration                  |
+| **Google Gemini API**      | Job post generation & resume evaluation |
+| **Google Sheets**          | Store and update candidate data         |
+| **Google Drive**           | Host uploaded resumes                   |
+| **Google Calendar**        | Schedule interview events               |
+| **LinkedIn API**           | Auto-publish job posts                  |
+| **JavaScript (Code node)** | Rank top candidates                     |
 
-It can be adapted to different hiring platforms (LinkedIn, Google Forms, custom forms, etc.).
+---
+
+## 🖼️ Workflow Screenshot
+
+![Workflow Screenshot](./workflow_screenshot.png)
+
+---
+
+## 🚀 How to Use
+
+1. **Import the workflow JSON** into your n8n instance.
+2. Set up credentials for:
+
+   * Google APIs (Drive, Sheets, Calendar)
+   * LinkedIn API
+   * Gemini API (via LangChain)
+3. Update any spreadsheet or document links as needed.
+4. Execute the workflow or trigger it via chat input.
+5. Watch the automation handle your recruitment pipeline end-to-end!
+
+---
+
+## 📂 Repository Structure
+
+```
+Recruitment-workflow-using-n8n/
+├── recruitment_workflow.json      # Cleaned n8n workflow
+├── workflow_screenshot.png        # Visual representation
+└── README.md                      # Documentation
+```
 
 ---
 
 ## 🪪 License
 
-This project is licensed under the **MIT License** – feel free to use and modify it for your own workflows.
+This project is licensed under the **MIT License** — feel free to use, modify, and share.
 
 ---
 
-## 👨‍💻 Author
+## 👤 Author
 
-Created by **Ouni Mohamed Amine**  
-AI Engineer 
+**Ouni Mohamed Amine**
+[www.ouni.site](https://www.ouni.site)
+💼 AI Engineer | Automation Enthusiast
+
+```
+
+---
+
+Would you like me to also generate a `.gitignore` and `LICENSE` file (MIT style) so your repo looks complete?
+```
