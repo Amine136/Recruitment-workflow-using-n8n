@@ -107,21 +107,9 @@ Recruitment-workflow-using-n8n/
 
 ---
 
-## 🪪 License
-
-This project is licensed under the **MIT License** — feel free to use, modify, and share.
-
----
-
 ## 👤 Author
 
 **Ouni Mohamed Amine**
-[www.ouni.site](https://www.ouni.site)
-💼 AI Engineer | Automation Enthusiast
+AI Engineer 
 
-```
 
----
-
-Would you like me to also generate a `.gitignore` and `LICENSE` file (MIT style) so your repo looks complete?
-```
